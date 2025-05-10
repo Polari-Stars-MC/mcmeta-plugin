@@ -4,17 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -90,7 +87,7 @@ public class NeoForgeModsToml {
             Order ordering,
             Side side
 
-    ) {
+    ) {}
 
-    }
+
 }

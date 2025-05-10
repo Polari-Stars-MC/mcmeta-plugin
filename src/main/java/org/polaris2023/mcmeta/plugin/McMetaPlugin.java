@@ -1,6 +1,5 @@
 package org.polaris2023.mcmeta.plugin;
 
-import net.neoforged.moddevgradle.dsl.NeoForgeExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -17,6 +16,7 @@ import java.util.Map;
 public class McMetaPlugin implements Plugin<Project> {
     @Override
     public void apply(Project target) {
+        McMetaSettings mcMetaSettings = target.getExtensions().create("mcmeta-settings", McMetaSettings.class, target);
         NeoForgeModsToml neoforge = target.getExtensions().create("neoforge", NeoForgeModsToml.class, target);
         TaskProvider<Task> generatedModsTomlByNeoForge =
                 target.getTasks().register("generatedModsTomlByNeoForge",
@@ -105,10 +105,19 @@ public class McMetaPlugin implements Plugin<Project> {
                         }
                     });
                 });
+
         target.afterEvaluate(project -> {
-            if (project.getPlugins().hasPlugin("neo.neoforged.moddev")) {
-                NeoForgeExtension byType = project.getExtensions().getByType(NeoForgeExtension.class);
-                byType.ideSyncTask(generatedModsTomlByNeoForge);
+            switch (mcMetaSettings.loaderType.get()) {
+                case FABRIC -> {
+                }
+                case NEOFORGE -> {
+                    NeoForgeLink.run(project, generatedModsTomlByNeoForge);
+                }
+                case FORGE -> {
+
+                }
+                case QUILT -> {
+                }
             }
         });
     }
