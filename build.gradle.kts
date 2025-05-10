@@ -20,6 +20,7 @@ repositories {
 dependencies {
     implementation(gradleApi())
     implementation(kotlin("stdlib"))
+    compileOnly("net.neoforged:moddev-gradle:2.0.88")
 }
 
 gradlePlugin {

@@ -1,5 +1,6 @@
 package org.polaris2023.mcmeta.plugin;
 
+import net.neoforged.moddevgradle.dsl.NeoForgeExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -104,6 +105,11 @@ public class McMetaPlugin implements Plugin<Project> {
                         }
                     });
                 });
-
+        target.afterEvaluate(project -> {
+            if (project.getPlugins().hasPlugin("neo.neoforged.moddev")) {
+                NeoForgeExtension byType = project.getExtensions().getByType(NeoForgeExtension.class);
+                byType.ideSyncTask(generatedModsTomlByNeoForge);
+            }
+        });
     }
 }

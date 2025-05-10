@@ -12,4 +12,4 @@ plugins {
 
 rootProject.name = "mcmeta-plugin"
 
-include("test")
+include("test-neo-mdg")
