@@ -5,6 +5,9 @@ import lombok.experimental.Accessors;
 import org.gradle.api.Project;
 import org.gradle.api.provider.Property;
 
+/**
+ * @author baka4n
+ */
 @Getter
 @Accessors(fluent = true)
 public class McMetaSettings {

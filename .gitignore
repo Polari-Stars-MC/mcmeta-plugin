@@ -3,6 +3,7 @@
 !src/**/build/
 
 .idea/
+.xcodemap/
 
 # Ignore Gradle GUI config
 gradle-app.setting

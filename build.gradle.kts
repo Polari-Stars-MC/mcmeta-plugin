@@ -34,9 +34,19 @@ gradlePlugin {
     }
 }
 
+tasks.javadoc {
+    isFailOnError = false
+    this.options.encoding = "UTF-8"
+}
+
 sonatypeUploader {
-    tokenName = System.getenv("SONATYPE_PUBLISH_TOKEN")
-    tokenPasswd = System.getenv("SONATYPE_PASSWORD")
+    tokenName = properties["central.sonatype.token.name"].toString()
+    tokenPasswd = properties["central.sonatype.token.passwd"].toString()
+    signing = Action {
+        this.keyId = properties["signing.key.id"].toString()
+        this.keyPasswd = properties["signing.key.passwd"].toString()
+        this.secretKeyPath = properties["signing.secret.key"].toString()
+    }
     pom = Action {
         name.set("MCMeta Plugin")
         description.set("Minecraft metadata generation")

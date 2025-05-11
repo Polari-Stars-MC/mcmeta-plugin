@@ -13,6 +13,9 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+/**
+ * @author baka4n
+ */
 public class McMetaPlugin implements Plugin<Project> {
     @Override
     public void apply(Project target) {
