@@ -9,31 +9,46 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.polaris2023.mcmeta.api.IDependencies;
+import org.polaris2023.mcmeta.api.IWrite;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeDependency;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class NeoForgeModsToml implements IDependencies {
+public class NeoForgeModsToml implements IDependencies, IWrite {
     private final Project project;
 
     public final Property<Boolean> showAsDataPack;
 
     public final Property<String> logoFile;
-    public final ListProperty<Mods> mods;
+    public final ListProperty<NeoForgeMods> mods;
     public final MapProperty<String, ForgeLikeDependency[]> dependencies;
     public final ListProperty<String> accessTransformers;
     public final ListProperty<String> mixins;
 
-    public Mods mods(Action<Mods> action) {
-        Mods mods = new Mods(project);
+    public NeoForgeMods mods(Action<NeoForgeMods> action) {
+        NeoForgeMods mods = new NeoForgeMods(project);
         action.execute(mods);
         this.mods.get().add(mods);
         return mods;
+    }
+
+    public void writeDependencies(BufferedWriter bw) throws IOException {
+        for (var entry : dependencies.get().entrySet()) {
+            ForgeLikeDependency[] value = entry.getValue();
+            String key = entry.getKey();
+            for (ForgeLikeDependency dependency : value) {
+                bw.write("[[dependencies.%s]]\n".formatted(key));
+                dependency.write(bw);
+            }
+        }
     }
 
 
@@ -43,36 +58,45 @@ public class NeoForgeModsToml implements IDependencies {
 
         logoFile = project.getObjects().property(String.class);
 
-        mods = project.getObjects().listProperty(Mods.class).convention(new ArrayList<>());
+        mods = project.getObjects().listProperty(NeoForgeMods.class).convention(new ArrayList<>());
         dependencies = project.getObjects().mapProperty(String.class, ForgeLikeDependency[].class).convention(new HashMap<>());
         accessTransformers = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         mixins = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
     }
 
-    public static class Mods {
-        public final Property<String> modId;
-        public final Property<String> version;
-        public final Property<String> displayName;
-        public final Property<String> authors;
-        public final Property<String> description;
-        public final Property<String> logoFile;
-        public final Property<String> credits;
-        public final Property<URI> displayURL;
-        public final MapProperty<String, URI> contact;
-        public Mods(Project project) {
-            modId = project.getObjects().property(String.class).convention("examplemod");
-            version = project.getObjects().property(String.class).convention("0.0.1");
-            displayName = project.getObjects().property(String.class).convention("Example Mod");
-            authors = project.getObjects().property(String.class);
-            description = project.getObjects().property(String.class);
-            logoFile = project.getObjects().property(String.class);
-            credits = project.getObjects().property(String.class);
-            displayURL = project.getObjects().property(URI.class);
-            contact = project.getObjects().mapProperty(String.class, URI.class).convention(new HashMap<>());
+
+    /**
+     * @param bw
+     * @throws IOException
+     */
+    @Override
+    public void write(BufferedWriter bw) throws IOException {
+        if (showAsDataPack.get()) bw.write("showAsDataPack=\"%b\"\n".formatted(showAsDataPack.get()));
+        if (logoFile.isPresent()) bw.write("logoFile=\"%s\"\n".formatted(logoFile.get()));
+        for (NeoForgeMods mods : mods.get()) {
+            bw.write("[[mods]]\n");
+            mods.write(bw);
+            if (!mods.contact.get().isEmpty()) {
+                bw.write("[mods.contact]\n");
+                for (Map.Entry<String, URI> entry : mods.contact.get().entrySet()) {
+                    bw.write("%s, \"%s\"\n".formatted(entry.getKey(), entry.getValue()));
+                }
+            }
         }
+
+        if (!accessTransformers.get().isEmpty()) {
+            for (String accessTransformers : accessTransformers.get()) {
+                bw.write("[[accessTransformers]]\n");
+                bw.write("file=\"%s\"\n".formatted(accessTransformers));
+            }
+        }
+        if (!mixins.get().isEmpty()) {
+            for (String mixins : mixins.get()) {
+                bw.write("[[mixins]]\n");
+                bw.write("config=\"%s\"\n".formatted(mixins));
+            }
+        }
+        writeDependencies(bw);
+
     }
-
-
-
-
 }

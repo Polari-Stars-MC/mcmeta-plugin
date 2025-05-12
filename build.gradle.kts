@@ -31,6 +31,15 @@ gradlePlugin {
             implementationClass = "org.polaris2023.mcmeta.plugin.McMetaPlugin"
 
         }
+        create("mcmetaNeoPlugin") {
+            id = "io.github.Polari-Stars-MC.meta-neo-plugin"
+            implementationClass = "org.polaris2023.mcmeta.plugin.McMetaNeoForgePlugin"
+        }
+        create("mcmetaForgePlugin") {
+            id = "io.github.Polari-Stars-MC.meta-forge-plugin"
+            implementationClass = "org.polaris2023.mcmeta.plugin.McMetaForgePlugin"
+        }
+
     }
 }
 

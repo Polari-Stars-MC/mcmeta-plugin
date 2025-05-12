@@ -40,37 +40,23 @@ public class ForgeModsToml implements IDependencies {
         return mods;
     }
 
-    public static class Mods {
-        public final Property<String> modId;
+    public static class Mods extends ModLike {
+
         public final Property<String> namespace;
-        public final Property<String> version;
-        public final Property<String> displayName;
-        public final Property<String> description;
-        public final Property<String> logoFile;
         public final Property<Boolean> logoBlur;
         public final Property<URI> updateJSONURL;
         public final MapProperty<String, String> features;
         public final MapProperty<String, String> modproperties;
         public final Property<URI> modUrl;
-        public final Property<String> credits;
-        public final Property<String> authors;
-        public final Property<URI> displayURL;
         public final Property<String> displayTest;
         public Mods(Project project) {
-            modId = project.getObjects().property(String.class).convention("examplemod");
-            namespace = project.getObjects().property(String.class);
-            version = project.getObjects().property(String.class).convention("0.0.1");
-            displayName = project.getObjects().property(String.class).convention("Example Mod");
-            description = project.getObjects().property(String.class).convention("This is Example Mod");
-            logoFile = project.getObjects().property(String.class);
+            super(project);
+            namespace = project.getObjects().property(String.class).convention(modId.get());
             logoBlur = project.getObjects().property(Boolean.class).convention(true);
             updateJSONURL = project.getObjects().property(URI.class);
             features = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
             modproperties = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
             modUrl = project.getObjects().property(URI.class);
-            credits = project.getObjects().property(String.class);
-            authors = project.getObjects().property(String.class);
-            displayURL = project.getObjects().property(URI.class);
             displayTest = project.getObjects().property(String.class);
         }
     }

@@ -1,4 +1,4 @@
-package org.polaris2023.mcmeta.plugin;
+package org.polaris2023.mcmeta.extension;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
