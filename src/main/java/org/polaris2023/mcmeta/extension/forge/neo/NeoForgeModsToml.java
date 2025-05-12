@@ -1,13 +1,15 @@
-package org.polaris2023.mcmeta.plugin;
+package org.polaris2023.mcmeta.extension.forge.neo;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
+import org.polaris2023.mcmeta.api.IDependencies;
+import org.polaris2023.mcmeta.extension.forge.ForgeLikeDependency;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -16,39 +18,33 @@ import java.util.HashMap;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class NeoForgeModsToml {
+public class NeoForgeModsToml implements IDependencies {
     private final Project project;
-    public final Property<String> modLoader;
-    public final Property<String> loaderVersion;
-    public final Property<String> license;
-    public final Property<Boolean> showAsResourcePack;
+
     public final Property<Boolean> showAsDataPack;
-    public final ListProperty<String> services;
+
     public final Property<String> logoFile;
-    public final Property<URI> issueTrackerURL;
-    public final MapProperty<String, String> properties;
     public final ListProperty<Mods> mods;
-    public final MapProperty<String, Dependency> dependencies;
+    public final MapProperty<String, ForgeLikeDependency[]> dependencies;
     public final ListProperty<String> accessTransformers;
     public final ListProperty<String> mixins;
 
-    public Mods makeMods() {
-        return new Mods(project);
+    public Mods mods(Action<Mods> action) {
+        Mods mods = new Mods(project);
+        action.execute(mods);
+        this.mods.get().add(mods);
+        return mods;
     }
+
 
     public NeoForgeModsToml(Project project) {
         this.project = project;
-        modLoader = project.getObjects().property(String.class).convention("javafml");
-        loaderVersion = project.getObjects().property(String.class).convention("[0,)");
-        license = project.getObjects().property(String.class).convention("All rights reserved");
-        showAsResourcePack = project.getObjects().property(Boolean.class).convention(false);
         showAsDataPack = project.getObjects().property(Boolean.class).convention(false);
-        services = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
+
         logoFile = project.getObjects().property(String.class);
-        issueTrackerURL = project.getObjects().property(URI.class);
-        properties = project.getObjects().mapProperty(String.class, String.class);
+
         mods = project.getObjects().listProperty(Mods.class).convention(new ArrayList<>());
-        dependencies = project.getObjects().mapProperty(String.class, Dependency.class).convention(new HashMap<>());
+        dependencies = project.getObjects().mapProperty(String.class, ForgeLikeDependency[].class).convention(new HashMap<>());
         accessTransformers = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         mixins = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
     }
@@ -76,18 +72,7 @@ public class NeoForgeModsToml {
         }
     }
 
-    public enum Order {NONE, BEFORE, AFTER}
-    public enum Side {BOTH, SERVER, CLIENT}
 
-    @Builder
-    public record Dependency(
-            String modId,
-            Boolean mandatory,
-            String versionRange,
-            Order ordering,
-            Side side
-
-    ) {}
 
 
 }
