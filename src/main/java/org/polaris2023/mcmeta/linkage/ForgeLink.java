@@ -40,11 +40,8 @@ public class ForgeLink {
             try(FileWriter fileWriter = new FileWriter(outputFile);
             BufferedWriter bw = new BufferedWriter(fileWriter)) {
                 forgeLike.write(bw);
-                for (ForgeModsToml.Mods mods : forge.mods.get()) {
-                    bw.write("[[mods]]\n");
-                    mods.write(bw);
-                    if (!mods.namespace.get().equals(mods.modId.get())) bw.write(", namespace=\"%s\"\n".formatted(mods.namespace.get()));
-                }
+                forge.write(bw);
+
             } catch (Exception e) {
                 project.getLogger().error(e.getMessage());
             }

@@ -22,14 +22,13 @@ import java.util.Map;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class NeoForgeModsToml implements IDependencies, IWrite {
+public class NeoForgeModsToml implements IWrite {
     private final Project project;
 
     public final Property<Boolean> showAsDataPack;
 
     public final Property<String> logoFile;
     public final ListProperty<NeoForgeMods> mods;
-    public final MapProperty<String, ForgeLikeDependency[]> dependencies;
     public final ListProperty<String> accessTransformers;
     public final ListProperty<String> mixins;
 
@@ -40,16 +39,7 @@ public class NeoForgeModsToml implements IDependencies, IWrite {
         return mods;
     }
 
-    public void writeDependencies(BufferedWriter bw) throws IOException {
-        for (var entry : dependencies.get().entrySet()) {
-            ForgeLikeDependency[] value = entry.getValue();
-            String key = entry.getKey();
-            for (ForgeLikeDependency dependency : value) {
-                bw.write("[[dependencies.%s]]\n".formatted(key));
-                dependency.write(bw);
-            }
-        }
-    }
+
 
 
     public NeoForgeModsToml(Project project) {
@@ -59,7 +49,6 @@ public class NeoForgeModsToml implements IDependencies, IWrite {
         logoFile = project.getObjects().property(String.class);
 
         mods = project.getObjects().listProperty(NeoForgeMods.class).convention(new ArrayList<>());
-        dependencies = project.getObjects().mapProperty(String.class, ForgeLikeDependency[].class).convention(new HashMap<>());
         accessTransformers = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         mixins = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
     }
@@ -74,14 +63,8 @@ public class NeoForgeModsToml implements IDependencies, IWrite {
         if (showAsDataPack.get()) bw.write("showAsDataPack=\"%b\"\n".formatted(showAsDataPack.get()));
         if (logoFile.isPresent()) bw.write("logoFile=\"%s\"\n".formatted(logoFile.get()));
         for (NeoForgeMods mods : mods.get()) {
-            bw.write("[[mods]]\n");
             mods.write(bw);
-            if (!mods.contact.get().isEmpty()) {
-                bw.write("[mods.contact]\n");
-                for (Map.Entry<String, URI> entry : mods.contact.get().entrySet()) {
-                    bw.write("%s, \"%s\"\n".formatted(entry.getKey(), entry.getValue()));
-                }
-            }
+
         }
 
         if (!accessTransformers.get().isEmpty()) {
@@ -96,7 +79,7 @@ public class NeoForgeModsToml implements IDependencies, IWrite {
                 bw.write("config=\"%s\"\n".formatted(mixins));
             }
         }
-        writeDependencies(bw);
+
 
     }
 }

@@ -1,9 +1,13 @@
 package org.polaris2023.mcmeta.extension.forge;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
+import org.polaris2023.mcmeta.api.IDependencies;
 import org.polaris2023.mcmeta.api.IWrite;
 
 import java.io.BufferedWriter;
@@ -18,7 +22,11 @@ import java.util.Map;
  * {@code @Date : 2025/05/12 09:37:54}
  * @apiNote NeoForge and Forge Same code
  */
-public class ForgeLikeToml implements IWrite {
+@Getter
+@Setter
+@Accessors(fluent = true)
+public class ForgeLikeToml implements IWrite , IDependencies {
+    public final Project project;
     public final Property<String> modLoader;
     public final Property<String> loaderVersion;
     public final Property<String> license;
@@ -26,8 +34,10 @@ public class ForgeLikeToml implements IWrite {
     public final ListProperty<String> services;
     public final MapProperty<String, String> properties;
     public final Property<URI> issueTrackerURL;
+    public final MapProperty<String, ForgeLikeDependency[]> dependencies;
 
     public ForgeLikeToml(Project project) {
+        this.project = project;
         modLoader = project.getObjects().property(String.class).convention("javafml");
         loaderVersion = project.getObjects().property(String.class).convention("[0,)");
         license = project.getObjects().property(String.class).convention("All rights reserved");
@@ -35,6 +45,8 @@ public class ForgeLikeToml implements IWrite {
         services = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         properties = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
         issueTrackerURL = project.getObjects().property(URI.class);
+        dependencies = project.getObjects().mapProperty(String.class, ForgeLikeDependency[].class).convention(new HashMap<>());
+
     }
     @Override
     public void write(BufferedWriter bw) throws IOException {
@@ -61,8 +73,7 @@ public class ForgeLikeToml implements IWrite {
             bw.write("}\n");
         }
         if (issueTrackerURL.isPresent()) bw.write("issueTrackerURL=\"%s\"\n".formatted(issueTrackerURL.get()));
-
-
+        writeDependencies(bw);
 
     }
 }

@@ -39,6 +39,7 @@ public class ModLike implements IWrite {
      */
     @Override
     public void write(BufferedWriter bw) throws IOException {
+        bw.write("[[mods]]\n");
         bw.write("modId=\"%s\"\n".formatted(modId.get()));
         bw.write("version=\"%s\"\n".formatted(version.get()));
         bw.write("displayName=\"%s\"\n".formatted(displayName.get()));

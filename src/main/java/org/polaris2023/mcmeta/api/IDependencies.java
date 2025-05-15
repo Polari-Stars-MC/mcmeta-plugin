@@ -4,6 +4,8 @@ import org.gradle.api.Action;
 import org.gradle.api.provider.MapProperty;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeDependency;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -27,6 +29,16 @@ public interface IDependencies extends IProject {
             stringMap.put(modid, dependencies1);
         }
         return build;
+    }
+    default void writeDependencies(BufferedWriter bw) throws IOException {
+        for (var entry : dependencies().get().entrySet()) {
+            ForgeLikeDependency[] value = entry.getValue();
+            String key = entry.getKey();
+            for (ForgeLikeDependency dependency : value) {
+                bw.write("[[dependencies.%s]]\n".formatted(key));
+                dependency.write(bw);
+            }
+        }
     }
 
 }
