@@ -19,8 +19,8 @@ public class ForgeLikeDependency implements IWrite {
     private final Order ordering;
     private final Side side;
 
-    public static ForgeDependency.ForgeDependencyBuilder builder() {
-        return new ForgeDependency.ForgeDependencyBuilder();
+    public static ForgeLikeDependency.ForgeLikeDependencyBuilder builder() {
+        return new ForgeLikeDependency.ForgeLikeDependencyBuilder();
     }
 
     public ForgeLikeDependency(String modId, String versionRange, Order ordering, Side side) {
