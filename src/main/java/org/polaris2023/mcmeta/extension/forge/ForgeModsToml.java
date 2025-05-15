@@ -10,6 +10,7 @@ import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
 import org.polaris2023.mcmeta.api.IDependencies;
 import org.polaris2023.mcmeta.api.IWrite;
+import org.polaris2023.mcmeta.extension.forge.neo.NeoForgeDependency;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -29,10 +30,12 @@ public class ForgeModsToml implements IWrite {
     public final Project project;
     public final Property<Boolean> clientSideOnly;
     public final ListProperty<Mods> mods;
+    public final MapProperty<String, ForgeDependency[]> dependencies;
     public ForgeModsToml(Project project) {
         this.project = project;
         clientSideOnly = project.getObjects().property(Boolean.class).convention(false);
         mods = project.getObjects().listProperty(Mods.class).convention(new ArrayList<>());
+        dependencies = project.getObjects().mapProperty(String.class, ForgeDependency[].class).convention(new HashMap<>());
     }
 
     public Mods mods(Action<Mods> action) {
@@ -52,6 +55,14 @@ public class ForgeModsToml implements IWrite {
 
         for (ForgeModsToml.Mods mods : mods.get()) {
             mods.write(bw);
+        }
+        for (var entry : dependencies().get().entrySet()) {
+            ForgeDependency[] value = entry.getValue();
+            String key = entry.getKey();
+            for (ForgeDependency dependency : value) {
+                bw.write("[[dependencies.%s]]\n".formatted(key));
+                dependency.write(bw);
+            }
         }
 
     }

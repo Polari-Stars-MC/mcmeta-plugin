@@ -8,16 +8,13 @@ import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
-import org.polaris2023.mcmeta.api.IDependencies;
 import org.polaris2023.mcmeta.api.IWrite;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeDependency;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -31,6 +28,7 @@ public class NeoForgeModsToml implements IWrite {
     public final ListProperty<NeoForgeMods> mods;
     public final ListProperty<String> accessTransformers;
     public final ListProperty<String> mixins;
+    public final MapProperty<String, NeoForgeDependency[]> dependencies;
 
     public NeoForgeMods mods(Action<NeoForgeMods> action) {
         NeoForgeMods mods = new NeoForgeMods(project);
@@ -51,6 +49,7 @@ public class NeoForgeModsToml implements IWrite {
         mods = project.getObjects().listProperty(NeoForgeMods.class).convention(new ArrayList<>());
         accessTransformers = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         mixins = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
+        dependencies = project.getObjects().mapProperty(String.class, NeoForgeDependency[].class).convention(new HashMap<>());
     }
 
 
@@ -77,6 +76,15 @@ public class NeoForgeModsToml implements IWrite {
             for (String mixins : mixins.get()) {
                 bw.write("[[mixins]]\n");
                 bw.write("config=\"%s\"\n".formatted(mixins));
+            }
+        }
+
+        for (var entry : dependencies().get().entrySet()) {
+            NeoForgeDependency[] value = entry.getValue();
+            String key = entry.getKey();
+            for (NeoForgeDependency dependency : value) {
+                bw.write("[[dependencies.%s]]\n".formatted(key));
+                dependency.write(bw);
             }
         }
 

@@ -6,7 +6,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-
         classpath("io.github.polari-stars-mc:mcmeta-plugin:0.0.1-fix")
     }
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 @Getter
 @Setter
 @Accessors(fluent = true)
-public class ForgeLikeToml implements IWrite , IDependencies {
+public class ForgeLikeToml implements IWrite {
     public final Project project;
     public final Property<String> modLoader;
     public final Property<String> loaderVersion;
@@ -34,7 +34,7 @@ public class ForgeLikeToml implements IWrite , IDependencies {
     public final ListProperty<String> services;
     public final MapProperty<String, String> properties;
     public final Property<URI> issueTrackerURL;
-    public final MapProperty<String, ForgeLikeDependency[]> dependencies;
+
 
     public ForgeLikeToml(Project project) {
         this.project = project;
@@ -45,7 +45,6 @@ public class ForgeLikeToml implements IWrite , IDependencies {
         services = project.getObjects().listProperty(String.class).convention(new ArrayList<>());
         properties = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
         issueTrackerURL = project.getObjects().property(URI.class);
-        dependencies = project.getObjects().mapProperty(String.class, ForgeLikeDependency[].class).convention(new HashMap<>());
 
     }
     @Override
@@ -73,7 +72,6 @@ public class ForgeLikeToml implements IWrite , IDependencies {
             bw.write("}\n");
         }
         if (issueTrackerURL.isPresent()) bw.write("issueTrackerURL=\"%s\"\n".formatted(issueTrackerURL.get()));
-        writeDependencies(bw);
 
     }
 }
