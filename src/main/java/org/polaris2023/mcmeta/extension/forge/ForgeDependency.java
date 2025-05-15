@@ -1,13 +1,20 @@
 package org.polaris2023.mcmeta.extension.forge;
 
 import lombok.Builder;
+import org.polaris2023.mcmeta.api.IWrite;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+/**
+ * @author baka4n
+ */
 @Builder
-public class ForgeDependency extends ForgeLikeDependency {
-    private final Boolean mandatory;
+public record ForgeDependency(Boolean mandatory, ForgeLikeDependency like) implements IWrite {
+
+    public static ForgeDependency.ForgeDependencyBuilder builder() {
+        return new ForgeDependency.ForgeDependencyBuilder();
+    }
 
     public Boolean mandatory() {
         return mandatory;
@@ -15,7 +22,7 @@ public class ForgeDependency extends ForgeLikeDependency {
 
     @Override
     public void write(BufferedWriter bw) throws IOException {
-        super.write(bw);
+        like.write(bw);
         bw.write("mandatory=" + mandatory);
     }
 }

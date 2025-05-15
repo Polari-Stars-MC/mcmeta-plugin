@@ -9,7 +9,7 @@ import java.net.URI;
 import java.util.Objects;
 
 /**
- * @author : baka4n
+ * @author baka4n
  * {@code @Date : 2025/05/12 11:14:03}
  */
 @Builder
@@ -19,10 +19,15 @@ public class ForgeLikeDependency implements IWrite {
     private final Order ordering;
     private final Side side;
 
+    public static ForgeDependency.ForgeDependencyBuilder builder() {
+        return new ForgeDependency.ForgeDependencyBuilder();
+    }
 
-
-    public static ForgeLikeDependencyBuilder builder() {
-        return new ForgeLikeDependencyBuilder();
+    public ForgeLikeDependency(String modId, String versionRange, Order ordering, Side side) {
+        this.modId = modId;
+        this.versionRange = versionRange;
+        this.ordering = ordering;
+        this.side = side;
     }
 
     /**

@@ -1,29 +1,30 @@
 package org.polaris2023.mcmeta.extension.forge.neo;
 
 import lombok.Builder;
+import org.polaris2023.mcmeta.api.IWrite;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeDependency;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.URI;
 
+/**
+ * @author baka4n
+ */
 @Builder
-public class NeoForgeDependency extends ForgeLikeDependency {
-    private final URI referralUrl;
-    private final String reason;
-    private final Type type;
+public record NeoForgeDependency(URI referralUrl, String reason, Type type, ForgeLikeDependency like) implements IWrite {
 
     public enum Type {
         required, optional, incompatible, discouraged
     }
 
-    public URI referralUrl() {
-        return referralUrl;
+    public static NeoForgeDependency.NeoForgeDependencyBuilder builder() {
+        return new NeoForgeDependency.NeoForgeDependencyBuilder();
     }
 
     @Override
     public void write(BufferedWriter bw) throws IOException {
-        super.write(bw);
+        like.write(bw);
         if (referralUrl != null) {
             bw.write("referralUrl=\"%s\"".formatted(referralUrl));
         }
