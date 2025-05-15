@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author : baka4n
+ * @author baka4n
  * {@code @Date : 2025/05/12 11:16:23}
  */
 public interface IDependencies<T extends ForgeLikeDependency> extends IProject {
