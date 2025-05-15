@@ -21,17 +21,15 @@ public class McMetaPlugin implements Plugin<Project> {
         ForgeLikeToml forgeLike = target.getExtensions().create("forgelike",ForgeLikeToml.class, target);
         NeoForgeModsToml neoforge = target.getExtensions().create("neoforge", NeoForgeModsToml.class, target);
         ForgeModsToml forgeToml = target.getExtensions().create("forgeToml", ForgeModsToml.class, target);
-        TaskProvider<Task> generatedModsTomlByNeoForge = NeoForgeLink.tasks(target);
-        TaskProvider<Task> generatedModTomlByForge = ForgeLink.tasks(target);
         target.afterEvaluate(project -> {
             switch (mcMetaSettings.loaderType.get()) {
                 case FABRIC -> {
                 }
                 case NEOFORGE -> {
-                    NeoForgeLink.run(project, generatedModsTomlByNeoForge);
+                    NeoForgeLink.run(project, NeoForgeLink.tasks(target));
                 }
                 case FORGE -> {
-                    ForgeLink.run(project, generatedModTomlByForge);
+                    ForgeLink.run(project, ForgeLink.tasks(target));
                 }
                 case QUILT -> {
                 }
