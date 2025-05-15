@@ -43,7 +43,7 @@ public class ModLike implements IWrite {
         bw.write("modId=\"%s\"\n".formatted(modId.get()));
         bw.write("version=\"%s\"\n".formatted(version.get()));
         bw.write("displayName=\"%s\"\n".formatted(displayName.get()));
-        if (description.isPresent()) bw.write("description=‘’‘\n%s\n’‘’\n".formatted(description.get()));
+        if (description.isPresent()) bw.write("description='''\n%s\n'''\n".formatted(description.get()));
         if (authors.isPresent()) bw.write("authors=\"%s\"\n".formatted(authors.get()));
         if (logoFile.isPresent()) bw.write("logoFile=\"%s\"\n".formatted(logoFile.get()));
         if (credits.isPresent()) bw.write("credits=\"%s\"\n".formatted(credits.get()));
