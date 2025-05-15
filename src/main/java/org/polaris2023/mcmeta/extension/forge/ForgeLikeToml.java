@@ -7,7 +7,6 @@ import org.gradle.api.Project;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.MapProperty;
 import org.gradle.api.provider.Property;
-import org.polaris2023.mcmeta.api.IDependencies;
 import org.polaris2023.mcmeta.api.IWrite;
 
 import java.io.BufferedWriter;
