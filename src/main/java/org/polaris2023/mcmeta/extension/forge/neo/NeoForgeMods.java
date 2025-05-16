@@ -2,6 +2,7 @@ package org.polaris2023.mcmeta.extension.forge.neo;
 
 import org.gradle.api.Project;
 import org.gradle.api.provider.MapProperty;
+import org.gradle.api.provider.Property;
 import org.polaris2023.mcmeta.extension.forge.ModLike;
 
 import java.io.BufferedWriter;
@@ -15,21 +16,18 @@ import java.util.Map;
  * {@code @Date : 2025/05/12 22:30:55}
  */
 public class NeoForgeMods extends ModLike {
-    public final MapProperty<String, URI> contact;
-
+    public final Property<String> enumExtensions;
+    public final Property<String> featureFlags;
     public NeoForgeMods(Project project) {
         super(project);
-        contact = project.getObjects().mapProperty(String.class, URI.class).convention(new HashMap<>());
+        enumExtensions = project.getObjects().property(String.class);
+        featureFlags = project.getObjects().property(String.class);
     }
 
     @Override
     public void write(BufferedWriter bw) throws IOException {
         super.write(bw);
-        if (!contact.get().isEmpty()) {
-            bw.write("[mods.contact]\n");
-            for (Map.Entry<String, URI> entry : contact.get().entrySet()) {
-                bw.write("%s, \"%s\"\n".formatted(entry.getKey(), entry.getValue()));
-            }
-        }
+        if (enumExtensions.isPresent()) bw.write("enumExtensions=\"%s\"".formatted(enumExtensions.get()));
+        if (featureFlags.isPresent()) bw.write("featureFlags=\"%s\"".formatted(featureFlags.get()));
     }
 }

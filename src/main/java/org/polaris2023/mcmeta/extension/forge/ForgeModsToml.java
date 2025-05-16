@@ -67,45 +67,21 @@ public class ForgeModsToml implements IWrite {
 
     public static class Mods extends ModLike {
 
-        public final Property<String> namespace;
-        public final Property<Boolean> logoBlur;
-        public final Property<URI> updateJSONURL;
-        public final MapProperty<String, String> features;
-        public final MapProperty<String, String> modproperties;
-        public final Property<URI> modUrl;
+
+
+
+
         public final Property<String> displayTest;
         public Mods(Project project) {
             super(project);
-            namespace = project.getObjects().property(String.class).convention(modId.get());
-            logoBlur = project.getObjects().property(Boolean.class).convention(true);
-            updateJSONURL = project.getObjects().property(URI.class);
-            features = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
-            modproperties = project.getObjects().mapProperty(String.class, String.class).convention(new HashMap<>());
-            modUrl = project.getObjects().property(URI.class);
             displayTest = project.getObjects().property(String.class);
         }
 
         @Override
         public void write(BufferedWriter bw) throws IOException {
             super.write(bw);
-            if (!namespace.get().equals(modId.get())) bw.write("namespace=\"%s\"\n".formatted(namespace.get()));
-            if (!logoBlur.get()) bw.write("logoBlur=false\n");
-            if (updateJSONURL.isPresent()) bw.write("updateJSONURL=\"%s\"\n".formatted(updateJSONURL.get()));
-            if (!features.get().isEmpty()) {
-                bw.write("features={\n");
-                for (Map.Entry<String, String> e : features.get().entrySet()) {
-                    bw.write("\t%s=\"%s\"\n".formatted(e.getKey(), e.getValue()));
-                }
-                bw.write("}\n");
-            }
-            if (!modproperties.get().isEmpty()) {
-                bw.write("modproperties={\n");
-                for (Map.Entry<String, String> e : modproperties.get().entrySet()) {
-                    bw.write("\t%s=\"%s\"\n".formatted(e.getKey(), e.getValue()));
-                }
-                bw.write("}\n");
-            }
-            if (modUrl.isPresent()) bw.write("modUrl=\"%s\"\n".formatted(modUrl.get()));
+
+
             if (displayTest.isPresent()) bw.write("displayTest=\"%s\"\n".formatted(displayTest.get()));
         }
     }
