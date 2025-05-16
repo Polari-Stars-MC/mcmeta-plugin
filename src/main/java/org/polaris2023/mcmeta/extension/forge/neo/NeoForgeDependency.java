@@ -26,11 +26,11 @@ public record NeoForgeDependency(URI referralUrl, String reason, Type type, Forg
     public void write(BufferedWriter bw) throws IOException {
         like.write(bw);
         if (referralUrl != null) {
-            bw.write("referralUrl=\"%s\"".formatted(referralUrl));
+            bw.write("referralUrl=\"%s\"\n".formatted(referralUrl));
         }
         if (reason != null) {
-            bw.write("reason=\"%s\"".formatted(reason));
+            bw.write("reason=\"%s\"\n".formatted(reason));
         }
-        bw.write("type=\"%s\"".formatted(type.name()));
+        bw.write("type=\"%s\"\n".formatted(type.name()));
     }
 }

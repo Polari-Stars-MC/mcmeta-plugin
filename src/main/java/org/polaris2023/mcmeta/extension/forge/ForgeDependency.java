@@ -23,6 +23,6 @@ public record ForgeDependency(Boolean mandatory, ForgeLikeDependency like) imple
     @Override
     public void write(BufferedWriter bw) throws IOException {
         like.write(bw);
-        bw.write("mandatory=" + mandatory);
+        bw.write("mandatory=" + mandatory + "\n");
     }
 }
