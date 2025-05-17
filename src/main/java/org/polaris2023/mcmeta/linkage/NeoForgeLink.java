@@ -30,7 +30,7 @@ public class NeoForgeLink {
                 Directory directory = project
                         .getLayout()
                         .getBuildDirectory()
-                        .dir("generated/resources")
+                        .dir("generated/modMetaData")
                         .get();
                 SourceSetContainer sourceSets = target.getExtensions().getByType(SourceSetContainer.class);
                 SourceSet main = sourceSets.getByName("main");
