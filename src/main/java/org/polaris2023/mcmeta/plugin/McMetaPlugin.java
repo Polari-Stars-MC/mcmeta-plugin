@@ -26,7 +26,10 @@ public class McMetaPlugin implements Plugin<Project> {
         target.afterEvaluate(project -> {
             SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
             SourceSet main = sourceSets.getByName("main");
-            main.getAllJava().srcDir(mcMetaSettings.generatedDir.get().getAsFile().getAbsolutePath());
+            main.getAllJava().srcDir(
+                    project.getLayout().getBuildDirectory()
+                            .dir("generated/modMetaData").get().getAsFile().getAbsolutePath()
+            );
             switch (mcMetaSettings.loaderType.get()) {
                 case FABRIC -> {
                 }

@@ -24,10 +24,10 @@ public class ForgeLink {
         return target.getTasks().register("generatedModTomlByForge", task -> {
             task.setGroup("mcmeta");
             Project project = task.getProject();
-            McMetaSettings settings = project.getExtensions().getByType(McMetaSettings.class);
             ForgeLikeToml forgeLike = project.getExtensions().getByType(ForgeLikeToml.class);
             ForgeModsToml forge = project.getExtensions().getByType(ForgeModsToml.class);
-            File outputFile = settings.generatedDir.get()
+            File outputFile = project.getLayout()
+                    .getBuildDirectory().dir("generated/modMetaData").get()
                     .dir("META-INF")
                     .file("mods.toml")
                     .getAsFile();

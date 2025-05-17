@@ -23,13 +23,13 @@ import java.nio.charset.StandardCharsets;
 public class NeoForgeLink {
     public static TaskProvider<Task> tasks(Project target) {
         return target.getTasks().register("generatedModsTomlByNeoForge", task -> {
-            McMetaSettings settings = task.getExtensions().getByType(McMetaSettings.class);
             ForgeLikeToml forgeLike = task.getProject().getExtensions().getByType(ForgeLikeToml.class);
             NeoForgeModsToml neoforge = task.getProject().getExtensions().getByType(NeoForgeModsToml.class);
             task.setGroup("mcmeta");
             task.doLast(task1 -> {
                 Project project = task1.getProject();
-                File outputFile = settings.generatedDir.get()
+                File outputFile = project.getLayout()
+                        .getBuildDirectory().dir("generated/modMetaData").get()
                         .dir("META-INF")
                         .file("neoforge.mods.toml")
                         .getAsFile();
