@@ -7,6 +7,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
+import org.polaris2023.mcmeta.extension.McMetaSettings;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeToml;
 import org.polaris2023.mcmeta.extension.forge.neo.NeoForgeModsToml;
 
@@ -22,20 +23,13 @@ import java.nio.charset.StandardCharsets;
 public class NeoForgeLink {
     public static TaskProvider<Task> tasks(Project target) {
         return target.getTasks().register("generatedModsTomlByNeoForge", task -> {
+            McMetaSettings settings = task.getExtensions().getByType(McMetaSettings.class);
             ForgeLikeToml forgeLike = task.getProject().getExtensions().getByType(ForgeLikeToml.class);
             NeoForgeModsToml neoforge = task.getProject().getExtensions().getByType(NeoForgeModsToml.class);
             task.setGroup("mcmeta");
             task.doLast(task1 -> {
                 Project project = task1.getProject();
-                Directory directory = project
-                        .getLayout()
-                        .getBuildDirectory()
-                        .dir("generated/modMetaData")
-                        .get();
-                SourceSetContainer sourceSets = target.getExtensions().getByType(SourceSetContainer.class);
-                SourceSet main = sourceSets.getByName("main");
-                main.getAllJava().srcDir(directory);
-                File outputFile = directory
+                File outputFile = settings.generatedDir.get()
                         .dir("META-INF")
                         .file("neoforge.mods.toml")
                         .getAsFile();

@@ -3,6 +3,8 @@ package org.polaris2023.mcmeta.plugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.polaris2023.mcmeta.extension.McMetaSettings;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeToml;
@@ -22,6 +24,9 @@ public class McMetaPlugin implements Plugin<Project> {
         NeoForgeModsToml neoforge = target.getExtensions().create("neoforge", NeoForgeModsToml.class, target);
         ForgeModsToml forgeToml = target.getExtensions().create("forgeToml", ForgeModsToml.class, target);
         target.afterEvaluate(project -> {
+            SourceSetContainer sourceSets = project.getExtensions().getByType(SourceSetContainer.class);
+            SourceSet main = sourceSets.getByName("main");
+            main.getAllJava().srcDir(mcMetaSettings.generatedDir.get().getAsFile().getAbsolutePath());
             switch (mcMetaSettings.loaderType.get()) {
                 case FABRIC -> {
                 }

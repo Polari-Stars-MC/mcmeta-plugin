@@ -7,6 +7,7 @@ import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
 import org.gradle.language.jvm.tasks.ProcessResources;
+import org.polaris2023.mcmeta.extension.McMetaSettings;
 import org.polaris2023.mcmeta.extension.forge.ForgeLikeToml;
 import org.polaris2023.mcmeta.extension.forge.ForgeModsToml;
 
@@ -23,17 +24,10 @@ public class ForgeLink {
         return target.getTasks().register("generatedModTomlByForge", task -> {
             task.setGroup("mcmeta");
             Project project = task.getProject();
-            Directory directory = project
-                    .getLayout()
-                    .getBuildDirectory()
-                    .dir("generated/modMetaData")
-                    .get();
-            SourceSetContainer sourceSets = target.getExtensions().getByType(SourceSetContainer.class);
-            SourceSet main = sourceSets.getByName("main");
-            main.getAllJava().srcDir(directory);
+            McMetaSettings settings = project.getExtensions().getByType(McMetaSettings.class);
             ForgeLikeToml forgeLike = project.getExtensions().getByType(ForgeLikeToml.class);
             ForgeModsToml forge = project.getExtensions().getByType(ForgeModsToml.class);
-            File outputFile = directory
+            File outputFile = settings.generatedDir.get()
                     .dir("META-INF")
                     .file("mods.toml")
                     .getAsFile();
