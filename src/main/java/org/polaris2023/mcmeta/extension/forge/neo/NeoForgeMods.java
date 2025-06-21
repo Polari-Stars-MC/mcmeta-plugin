@@ -27,7 +27,7 @@ public class NeoForgeMods extends ModLike {
     @Override
     public void write(BufferedWriter bw) throws IOException {
         super.write(bw);
-        if (enumExtensions.isPresent()) bw.write("enumExtensions=\"%s\"".formatted(enumExtensions.get()));
-        if (featureFlags.isPresent()) bw.write("featureFlags=\"%s\"".formatted(featureFlags.get()));
+        if (enumExtensions.isPresent()) bw.write("enumExtensions=\"%s\"\n".formatted(enumExtensions.get()));
+        if (featureFlags.isPresent()) bw.write("featureFlags=\"%s\"\n".formatted(featureFlags.get()));
     }
 }
